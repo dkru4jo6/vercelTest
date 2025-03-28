@@ -1,0 +1,7 @@
+TEMP/
+.git
+__pycache__
+.test.py
+app.yaml
+backup/
+venv

@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html style="height: 100%;">
+
+<head>
+    <meta charset="=" utf-8 />
+    <title>SoulForged 任務告示牌</title>
+    <link rel="icon" href="https://i.ibb.co/nLFwC08/paper-06.png" type="image/png">
+    <link href="{{url_for('static',filename='css/missionBoardStyleV0-0-0.css')}}" rel="stylesheet" />
+    <!-- <link href="pagefile/static/css/missionBoardStyleV0-0-0.css" rel="stylesheet" /> -->
+    <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js"
+        integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
+    <!-- <script type="text/javascript" src="{{url_for('static',filename='js/jquery.min.js')}}"></script> -->
+    <script type="text/javascript">
+        var itemTypeTranslate = {'tool': '工具', 'woodcutting': '原木', 'carpentry': '木材', 'corpse': '屍體', 'doctoring': '屠宰', 'equipment': '防具',
+            'medical': '藥品', 'smithing': '鍛造', 'mining': '礦石', 'cooked': '食品', 'foraging': '作物', 'gathering': '蒐集', 'furniture': '家俱', 'other': '其他'};
+        var typeList = [
+            '道具徵求',
+            '道具銷售',
+            '搬運委託',
+            '搬運服務',
+            '討伐委託',
+            '討伐服務',
+            '護衛委託',
+            '護衛服務',
+            '代工委託',
+            '代工服務',
+            '其他任務'
+        ]
+        var iconUrlData = {
+            "animalList": [
+                "Rat",
+                "Rabbit",
+                "Mole",
+                "Green Snake",
+                "Porcupine",
+                "Squink",
+                "Wolf",
+                "Black Wolf",
+                "Red-eyed Wolf",
+                "Brown Bear",
+                "Black Bear",
+                "Grey Bear",
+                "Pigune",
+                "Boar",
+                "Fierce Tusk",
+                "Boarzilla",
+                "Grey Squitmunk",
+                "Brown Squitmunk",
+                "Lizard",
+                "Beetle",
+                "Fire Beetle",
+                "Black Widow",
+                "Scarlet Grub",
+                "Emerald Grub",
+                "Sulfur Grub",
+                "Leto Worm",
+                "Giant Mosquito",
+                "Chicken",
+                "Mallard",
+                "Frog",
+                "Tortoise",
+                "Alligator",
+                "Bat",
+                "Goat",
+                "Hawn",
+                "Bison",
+                "Manticore",
+                "Sabertooth",
+                "Gorilla",
+                "Forest Dweller",
+                "Ogre",
+                "Earth Golem",
+                "Skeleton",
+                "Blahaj",
+                "Fluffin",
+                "Sharpshell"
+            ],
+            "animalUrl": [
+                "Alligator",
+                "Bat",
+                "Beetle",
+                "Bison",
+                "Black-Bear",
+                "Black-Widow",
+                "Black-Wolf",
+                "Blahaj",
+                "Boar",
+                "Boarzilla",
+                "Brown-Bear",
+                "Brown-Squitmunk",
+                "Chicken",
+                "Earth-Golem",
+                "Emerald-Grub",
+                "Fierce-Tusk",
+                "Fire-Beetle",
+                "Fluffin",
+                "Forest-Dweller",
+                "Frog",
+                "Giant-Mosquito",
+                "Goat",
+                "Gorilla",
+                "Green-Snake",
+                "Grey-Bear",
+                "Grey-Squitmunk",
+                "Hawn",
+                "Lightning-Bug",
+                "Lizard",
+                "Mallard",
+                "Manticore",
+                "Mole",
+                "Ogre",
+                "Pigune",
+                "Porcupine",
+                "Rabbit",
+                "Rat",
+                "Red-eyed-Wolf",
+                "Sabertooth",
+                "Scarlet-Grub",
+                "Sharpshell",
+                "Skeleton",
+                "Squink",
+                "Sulfur-Grub",
+                "Tortoise",
+                "Fishing-Spot",
+                "Wolf",
+                "Leto-Worm"
+            ],
+            "carpentryUrl": [
+                "Poplar-Plank",
+                "Poplar-Pole",
+                "Pine-Plank",
+                "Pine-Pole",
+                "Waterwood-Plank",
+                "Waterwood-Pole",
+                "Cayew-Plank",
+                "Cayew-Pole"
+            ],
+            "cookedUrl": [
+                "Wheat-Flour",
+                "Hearty-Stew",
+                "Camping-Stew",
+                "Pluck-Stew",
+                "Spicy-Soup",
+                "Stewpendous",
+                "Sausage",
+                "Cookies",
+                "Kebab",
+                "Nanwich",
+                "Barf-Bowl",
+                "Omniscient-Mash",
+                "Cooked-Tough-Meat",
+                "Tender-Steak",
+                "Cooked-Fish",
+                "Cooked-Chicken-Leg",
+                "Cooked-Rib",
+                "Bread",
+                "Crust",
+                "Ogre-Stuffing",
+                "Ogre-Pie",
+                "Carrot-Stuffing",
+                "Carrot-Pie",
+                "Pea-Stuffing",
+                "Peas-Pie",
+                "Cooked-Jerky",
+                "Salted-Brown-Mushroom",
+                "Salted-Chicken-Leg",
+                "Salted-Raw-Fish",
+                "Salted-Rib-Rack",
+                "Salted-Tough-Meat",
+                "Salted-Blueshroom",
+                "Salted-Blueberry",
+                "Salted-Burst",
+                "Salted-Strawberry",
+                "Salted-Tender-Meat",
+                "Cooked-Lean-Meat"
+            ],
+            "corpseUrl": [
+                "Rat-Corpse",
+                "Rabbit-Corpse",
+                "Mole-Corpse",
+                "Green-Snake-Corpse",
+                "Porcupine-Corpse",
+                "Squink-Corpse",
+                "Wolf-Corpse",
+                "Black-Wolf-Corpse",
+                "Red-eyed-Wolf-Corpse",
+                "Brown-Bear-Corpse",
+                "Black-Bear-Corpse",
+                "Grey-Bear-Corpse",
+                "Pigune-Corpse",
+                "Boar-Corpse",
+                "Fierce-Tusk-Corpse",
+                "Boarzilla-Corpse",
+                "Brown-Squitmunk-Corpse",
+                "Grey-Squitmunk-Corpse",
+                "Lizard-Corpse",
+                "Beetle-Corpse",
+                "Fire-Beetle-Corpse",
+                "Black-Widow-Corpse",
+                "Lightning-Bug",
+                "Scarlet-Grub-Corpse",
+                "Emerald-Grub-Corpse",
+                "Sulfur-Grub-Corpse",
+                "Giant-Mosquito-Corpse",
+                "Chicken-Corpse",
+                "Mallard-Corpse",
+                "Frog-Corpse",
+                "Tortoise-Corpse",
+                "Alligator-Cropse",
+                "Bat-Corpse",
+                "Goat-Corpse",
+                "Hawn-Corpse",
+                "Bison-Corpse",
+                "Manticore-Corpse",
+                "Sabertooth-Corpse",
+                "Gorilla-Corpse",
+                "Forest-Dweller-Corpse",
+                "Ogre-Corpse",
+                "Earth-Golem-Corpse",
+                "Skeleton-Corpse",
+                "Human-Corpse",
+                "Blahaj-Corpse",
+                "Fluffin-Corpse",
+                "Sharpshell-Corpse",
+                "Red-Snapper",
+                "Grayscale",
+                "Scalefish",
+                "Stinkfish",
+                "Fat-Fish",
+                "Yellow-Crest"
+            ],
+            "doctoringUrl": [
+                "Thin-Hide",
+                "Brown-Hide",
+                "Grey-Hide",
+                "Black-Hide",
+                "Scale-Hide",
+                "Orange-Hide",
+                "Thin-Bone",
+                "Sturdy-Bone",
+                "Tough-Bone",
+                "Raw-Fat",
+                "Guts",
+                "Blood",
+                "Tough-Meat",
+                "Tender-Meat",
+                "Rib-Rack",
+                "Raw-Fish",
+                "Chicken-Leg",
+                "Rat-Tail",
+                "Fangs",
+                "Snake-Fang",
+                "Quills",
+                "Feather",
+                "Delicate-Plume",
+                "Chitin",
+                "Goat-Hoof",
+                "Bat-Wing",
+                "Dark-Sting",
+                "Stuffin",
+                "Sharpshard",
+                "Mantihorn",
+                "Gold-Chitin",
+                "Hawn-Hawn",
+                "Lizard-Pock",
+                "Long-Horn",
+                "Long-Tooth",
+                "Scent-Gland",
+                "Shark-Fin",
+                "Lean-Meat",
+                "Thin-Guts"
+            ],
+            "equipmentUrl": [
+                "Plain-Vest",
+                "Plain-Boots",
+                "Plain-Gloves",
+                "Plain-Hood",
+                "Pettiwood-Vest",
+                "Pettiwood-Boots",
+                "Pettiwood-Cuffs",
+                "Pettiwood-Hood",
+                "Studded-Leather",
+                "Leather-Boots",
+                "Leather-Cap",
+                "Leather-Gloves",
+                "Scaled-Vest",
+                "Scaled-Boots",
+                "Scaled-Gloves",
+                "Scaled-Helm",
+                "Gambeson-Vest",
+                "Gambeson-Boots",
+                "Gambeson-Gloves",
+                "Gambeson-Helm",
+                "Ranger-Coat",
+                "Scuttleplate",
+                "Crawlers",
+                "Pincers",
+                "Beetle-Cap",
+                "Darkscale-Plate",
+                "Darkscale-Bracers",
+                "Darkscale-Cowl",
+                "Brick-Plate",
+                "Brick-Stompers",
+                "Weave-Tunic",
+                "Weave-Boots",
+                "Weave-Gloves",
+                "Eris-Bunny-Hood",
+                "Villager-Robe",
+                "Villager-Boots",
+                "Villager-Gloves",
+                "Fedora",
+                "Farm-Robe",
+                "Farm-Boots",
+                "Farm-Gloves",
+                "Farm-Hat",
+                "Hearth-s-Heart",
+                "Flame-Walkers",
+                "Embracers",
+                "Sparks-Kiss",
+                "Protecc",
+                "Targe",
+                "Aegis",
+                "Buckler",
+                "Royal-Platemail",
+                "Darkscale-Mask"
+            ],
+            "foragingUrl": [
+                "Long-Grass",
+                "Peas",
+                "Bitterleaf",
+                "Carrot",
+                "Potato",
+                "Wheat",
+                "Onion",
+                "Pepper",
+                "Blueberries",
+                "Muckroot",
+                "Bluebell",
+                "Apple",
+                "Brown-Mushroom",
+                "Orange",
+                "Holly",
+                "Burst",
+                "Beetroot",
+                "Blueshroom",
+                "Leaflower",
+                "Punchkin",
+                "Strawberry",
+                "Goldstream-Leaf",
+                "Blood-Bud",
+                "Devils-Trumpets",
+                "Hops",
+                "Dust-Reed",
+                "Grass-Seed",
+                "Pea-Seed",
+                "Bitterleaf-Seed",
+                "Carrot-Seed",
+                "Potato-Seed",
+                "Wheat-Seed",
+                "Onion-Seed",
+                "Pepper-Seed",
+                "Henbane",
+                "Mandrake"
+            ],
+            "gatheringUrl": [
+                "Twig",
+                "Stone",
+                "Water",
+                "Honeycomb",
+                "Sand",
+                "Salt-Water"
+            ],
+            "medicalUrl": [
+                "Tourniquets",
+                "Bandages",
+                "Autumn-Wrap",
+                "Bruise-Ointment",
+                "Bruise-Ointment-2",
+                "Stab-Bandage",
+                "Endurance-Potion",
+                "Strength-Potion",
+                "Rage-Potion",
+                "Pain-Potion",
+                "Stoneskin-Potion",
+                "Hulk-Potion",
+                "Cats-Eye-Potion",
+                "Longstrider-Potion",
+                "Omnipotion",
+                "Transfusion",
+                "Acid",
+                "Dexterity-Potion",
+                "Remedy-Potion"
+            ],
+            "miningUrl": [
+                "Limestone",
+                "Clay",
+                "Granite",
+                "Granite-Block",
+                "Blackmark",
+                "Scarlet-Ore",
+                "Dulral",
+                "Shore",
+                "Mithril-Ore",
+                "Flint",
+                "Scarlet-Nugget",
+                "Shore-Nugget",
+                "Mithril-Nugget",
+                "Shinning-Ore",
+                "Blackmark-Two",
+                "Salt"
+            ],
+            "otherUrl": [
+                "Bark-Rope",
+                "Gutrope",
+                "Grass-Thread",
+                "Grassweave",
+                "Oil",
+                "Ink",
+                "Paper",
+                "Thin-Leather",
+                "Brown-Leather",
+                "Grey-Leather",
+                "Black-Leather",
+                "Leather-Rope",
+                "Leather-Strap",
+                "Wooden-Cogwheel",
+                "Spring",
+                "Hinge",
+                "Catgut",
+                "Orange-Leather",
+                "Thatch",
+                "Limestone-Dust",
+                "Soul-Stone"
+            ],
+            "smithingUrl": [
+                "Scarlet-Ingot",
+                "Scarlet-Plate",
+                "Scarlet-Ring",
+                "Scarlet-Rod",
+                "Dulral-Ingot",
+                "Dulral-Plate",
+                "Dulral-Ring",
+                "Dulral-Rod",
+                "Bronze-Ingot",
+                "Bronze-Plate",
+                "Bronze-Ring",
+                "Bronze-Rod",
+                "Mithril-Ingot",
+                "Mithril-Plate",
+                "Mithril-Ring",
+                "Mithril-Rod",
+                "Shine-Ingot",
+                "Shine-Plate",
+                "Shine-Ring",
+                "Shine-Rod",
+                "Buckle",
+                "Nail",
+                "Armored-Plate",
+                "Sawblade",
+                "Cauldron"
+            ],
+            "toolUrl": [
+                "Sharp-Stone",
+                "Basic-Pick",
+                "Fragile-Pick",
+                "Scarlet-Pick",
+                "Bone-Sickle",
+                "Moon-Sickle",
+                "Stone-Axe",
+                "Bone-Greataxe",
+                "Handaxe",
+                "Francisca",
+                "Savage-Axe-2",
+                "Battleaxe",
+                "Bone-Nailbat",
+                "Bone-Basher",
+                "Snakebite",
+                "Billy-Club",
+                "Flanged-Mace",
+                "Fanged-Club",
+                "The-Boner",
+                "Stone-Hammer",
+                "The-Crusher",
+                "Wooden-Sledge",
+                "Smasher",
+                "Smith-Hammer",
+                "Hunting-Spear",
+                "Feathered-Spear",
+                "Pike",
+                "Bone-Knife",
+                "Scarlet-Edge",
+                "Main-Gauche",
+                "Khepri-s-Claw",
+                "Short-Sword",
+                "Gladius",
+                "Broadsword",
+                "Savage-Sword",
+                "Bug-Net",
+                "Fishing-Rod",
+                "Angler",
+                "Handsaw",
+                "Hermit-Hoe",
+                "Pen",
+                "Quill-Needle",
+                "War-Drum",
+                "War-Horn",
+                "Torch",
+                "Candle",
+                "Bug-Light",
+                "Lantern",
+                "Lyre"
+            ],
+            "woodCuttingUrl": [
+                "Poplar-Log",
+                "Pine-Log",
+                "Waterwood-Log",
+                "Cayew-Log"
+            ],
+            "furnitureUrl": [
+                "Bar-Stool",
+                "Bearskin-Rug",
+                "Bear-Statue",
+                "Bed",
+                "Bone-Chimes",
+                "Comfy-Chair",
+                "Cottontail",
+                "Dining-Chair",
+                "Dream-Catcher",
+                "Dream-Weaver",
+                "Fancy-Table",
+                "Flying-Carpet",
+                "Fur-Bedroll",
+                "Leather-Rug",
+                "Manticore-Bust",
+                "Model-Bun-Bun",
+                "Rickety-Table",
+                "Simple-Table",
+                "Stool",
+                "Straw-Mattress",
+                "Wooden-Chimes",
+                "Welding-Mask"
+            ]
+        }
+        var settingSelValue = '';
+        var settingSelDOM = '';
+        var settingInputDOM = '';
+        var searchMethodState = 'type';
+        var searchedName = '';
+        var staticPath = '';
+        var itemList = {}
+        var mesStr = '成功上傳'
+        var version = '0-0-1';
+        function isMobileDevice() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+        function init() {
+            $('#searchDiv').hide()
+            urlNow = new URL(location.href);
+            if(urlNow.host.includes('vercel'))staticPath = 'pagefile/'
+            jsonFromBackend = JSON.parse($('#getDataDiv').html().replace(/'/g, '"'))
+            if(jsonFromBackend['username'] == 'undefined'){
+                $('#waitMessage').hide();
+                $('#siginPage').show()
+                $('#signUp').show()
+                console.log('未註冊')
+            }
+            else if(jsonFromBackend['username'] == 'unSigned'){
+                $('#waitMessage').hide();
+                $('#siginPage').show()
+                $('#signIn').show()
+            }
+            else showList();
+        }
+        function showList(){
+            $('#waitMessage').show();
+            $('#userName').html('Hi '+ jsonFromBackend['username'])
+            $('#siginPage').hide()
+            $('#searchDiv').show()
+            $('#boardDiv').show()
+            $('#boardDiv').html('')
+            for(mission of jsonFromBackend['missionList']){
+                let typeTranslate = {
+                    'itemReq':'道具徵求',
+                    'transportReq':'搬運委託',
+                    'constructionReq':'建設委託',
+                    'crusadeReq':'討伐委託',
+                    'guardReq':'護衛委託',
+                    'craftReq':'代工委託',
+                    'itemSup':'道具銷售',
+                    'transportSup':'搬運服務',
+                    'constructionSup':'建設服務',
+                    'crusadeSup':'討伐服務',
+                    'guardSup':'護衛服務',
+                    'craftSup':'代工服務',
+                    'special':'其他任務'
+                }
+                let iconPath = staticPath+"static/"
+                let qty = ''
+                if(mission['type'].includes('transport'))iconPath+="icon/transport.jpg";
+                else if(mission['type'].includes('crusade'))iconPath+="icon/crusade.jpg";
+                else if(mission['type'].includes('construction'))iconPath+="icon/construction.jpg";
+                else if(mission['type'] == 'itemReq' && Object.keys(mission['requirement']).length !=1)iconPath+="icon/itemReq.jpg";
+                else if(mission['type'] == 'itemReq' && Object.keys(mission['requirement']).length ==1){
+                    iconPath+="res/"+Object.keys(mission['requirement'])[0].replace(/ /g,'-')+".jpg";
+                    qty = mission['requirement'][Object.keys(mission['requirement'])[0]]
+                }
+                $('#boardDiv').append(
+                    $('<div>',{id:'mission'+mission['id'], class:'req'})
+                        .append($('<div>',{class:'missionType'}).html(typeTranslate[mission['type']]))
+                        .append($('<div>',{class:'reqFig'})
+                            .append($('<img>',{class:'itemFig',src:iconPath}))
+                            .append($('<div>',{class:'itemQty'}).html(qty))
+                        )
+                )
+                if(mission['type'] == 'itemReq'){
+                    $('#mission'+mission['id']).append($('<div>',{style:'font-size: 15px;'}).html('交易地點：'+mission['location']))
+                }
+                else if(mission['type'].includes('transport')){
+                    $('#mission'+mission['id'])
+                        .append($('<div>',{style:'font-size: 15px;'}).html('出發地：'+mission['departure']))
+                        .append($('<div>',{style:'font-size: 15px;'}).html('目的地：'+mission['destination']))
+                }
+                $('#mission'+mission['id']).append($('<div>',{style:'font-size: 15px;'}).html('委託者：'+mission['delegator']))
+            }
+            $('#waitMessage').hide();
+        }
+        function logIn(){
+            $('#waitMessage').show();
+            window.location.href = '/login'
+        }
+        function signUp(){
+            if($('#userNameInput').val() == ''){
+                if(confirm('未輸入暱稱，是否取消變更?')){
+                    console.log('取消變更')
+                    $('#userNameInput').val('')
+                    showList()
+                }
+            }
+            else if('username' in jsonFromBackend && $('#userNameInput').val() == jsonFromBackend['username']){
+                if(confirm('暱稱與目前相同，是否取消變更?')){
+                    console.log('取消變更')
+                    $('#userNameInput').val('')
+                    showList()
+                }
+            }
+            else{
+                $('#waitMessage').show();
+                jsonFromBackend['username'] = $('#userNameInput').val()
+                let formData = new FormData();
+                formData.append('userName',$('#userNameInput').val())
+                fetch('/signUp', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => {
+                        response.text().then(text =>{
+                            $('#userNameInput').val('')
+                            console.log(text)
+                            showList()
+                        })
+                    })
+            }
+        }
+        function signOut(){
+            $('#waitMessage').show();
+            window.location.href = '/logout'
+        }
+        function changeName(){
+            $('#boardDiv').hide()
+            $('#searchDiv').hide()
+            $('#siginPage').show()
+            $('#signUp').show()
+        }
+        function post(){
+            $('#infoPage').html('')
+            $('#searchDiv').hide()
+            $('#boardDiv').hide()
+            $('#infoPage')
+                .append($('<div>',{id:'typeSelDiv',class:'flex',style:'align-items: center;width:100%;'})
+                    .append($('<div>',{class:'formItemName'}).html('任務類型'))
+                    .append($('<select>',{id:'typeSel'}))
+                )
+                .append($('<div>',{id:'contentFormdiv',class:'flex',style:'display: flex; flex-direction: column;'})
+                    
+                )
+                .append($('<div>',{class:'flex',style:'align-items: center;margin: 10px;'})
+                    .append($('<button>',{onclick:''}).html('確認'))
+                    .append($('<button>',{onclick:'postForm("cancel");'}).html('取消'))
+                )
+            $('#typeSel').append($('<option>',{style:'display:none;'}).html(''))
+            for(i of typeList){
+                $('#typeSel').append($('<option>').html(i))
+            }
+            $('#typeSel').on('change',()=>{
+                itemList = {}
+                postForm($('#typeSel').val());
+            })
+            $('#infoPage').show()
+
+        }
+        function add(type){
+            if(type == 'item'){
+                $('#settingPage').html('')
+                $('#infoPage').hide()
+                $('#settingPage').show()
+                $('#settingPage')
+                    .append(
+                        $('<div>', { id: "itemAddDiv",  style: "display: flex; align-items: center;" })
+                            .append($('<div>', { id: 'searchMethodDiv', style: "font-size:20px; margin-right:10px;" }).append('物品類別'))
+                            .append($('<select>', { id: 'itemTypeSel', style: " padding:0px; height:30px" }))
+                            .append($('<button>', { onclick:'postForm("cancelAddItem")'}).append('取消'))
+                            
+                    )
+                    .append($('<div>', { id: "optionDataDiv", class: "nodeDataAreaContent"}))
+                for (i in itemTypeTranslate){
+                    $('<option>', { value: i }).append(itemTypeTranslate[i]).appendTo($('#itemTypeSel'))
+                } 
+                let allItem = [];
+                for (i of iconUrlData['cookedUrl']) {
+                    let oneDict = {}
+                    oneDict['name'] = i.replace(/-/g, ' ')
+                    oneDict['type'] = 'cooked'
+                    oneDict['url'] = staticPath+"static/res/"+i+'.jpg';
+                    allItem.push(oneDict)
+                }
+                for (i of iconUrlData['corpseUrl']) {
+                    let oneDict = {}
+                    oneDict['name'] = i.replace(/-/g, ' ')
+                    oneDict['type'] = 'corpse'
+                    oneDict['url'] = staticPath+"static/res/"+i+'.jpg';
+                    allItem.push(oneDict)
+                }
+                for (i of iconUrlData['furnitureUrl']) {
+                    let oneDict = {}
+                    oneDict['name'] = i.replace(/-/g, ' ')
+                    oneDict['type'] = 'furniture'
+                    oneDict['url'] = staticPath+"static/res/"+i+'.jpg';
+                    allItem.push(oneDict)
+                }
+                for (i of iconUrlData['doctoringUrl']) {
+                    let oneDict = {}
+                    oneDict['name'] = i.replace(/-/g, ' ')
+                    oneDict['type'] = 'doctoring'
+                    oneDict['url'] = staticPath+"static/res/"+i+'.jpg';
+                    allItem.push(oneDict)
+                }
+                for (i of iconUrlData['equipmentUrl']) {
+                    let oneDict = {}
+                    oneDict['name'] = i.replace(/-/g, ' ')
+                    oneDict['type'] = 'equipment'
+                    oneDict['url'] = staticPath+"static/res/"+i+'.jpg';
+                    allItem.push(oneDict)
+                }
+                for (i of iconUrlData['foragingUrl']) {
+                    let oneDict = {}
+                    oneDict['name'] = i.replace(/-/g, ' ')
+                    oneDict['type'] = 'foraging'
+                    oneDict['url'] = staticPath+"static/res/"+i+'.jpg';
+                    allItem.push(oneDict)
+                }
+                for (i of iconUrlData['gatheringUrl']) {
+                    let oneDict = {}
+                    oneDict['name'] = i.replace(/-/g, ' ')
+                    oneDict['type'] = 'gathering'
+                    oneDict['url'] = staticPath+"static/res/"+i+'.jpg';
+                    allItem.push(oneDict)
+                }
+                for (i of iconUrlData['medicalUrl']) {
+                    let oneDict = {}
+                    oneDict['name'] = i.replace(/-/g, ' ')
+                    oneDict['type'] = 'medical'
+                    oneDict['url'] = staticPath+"static/res/"+i+'.jpg';
+                    allItem.push(oneDict)
+                }
+                for (i of iconUrlData['miningUrl']) {
+                    let oneDict = {}
+                    oneDict['name'] = i.replace(/-/g, ' ')
+                    oneDict['type'] = 'mining'
+                    oneDict['url'] = staticPath+"static/res/"+i+'.jpg';
+                    allItem.push(oneDict)
+                }
+                for (i of iconUrlData['otherUrl']) {
+                    let oneDict = {}
+                    oneDict['name'] = i.replace(/-/g, ' ')
+                    oneDict['type'] = 'other'
+                    oneDict['url'] = staticPath+"static/res/"+i+'.jpg';
+                    allItem.push(oneDict)
+                }
+                for (i of iconUrlData['toolUrl']) {
+                    let oneDict = {}
+                    oneDict['name'] = i.replace(/-/g, ' ')
+                    oneDict['type'] = 'tool'
+                    oneDict['url'] = staticPath+"static/res/"+i+'.jpg';
+                    allItem.push(oneDict)
+                }
+                for (i of iconUrlData['carpentryUrl']) {
+                    let oneDict = {}
+                    oneDict['name'] = i.replace(/-/g, ' ')
+                    oneDict['type'] = 'carpentry'
+                    oneDict['url'] = staticPath+"static/res/"+i+'.jpg';
+                    allItem.push(oneDict)
+                }
+                for (i of iconUrlData['woodCuttingUrl']) {
+                    let oneDict = {}
+                    oneDict['name'] = i.replace(/-/g, ' ')
+                    oneDict['type'] = 'woodcutting'
+                    oneDict['url'] = staticPath+"static/res/"+i+'.jpg';
+                    allItem.push(oneDict)
+                }
+                for (i of iconUrlData['smithingUrl']) {
+                    let oneDict = {}
+                    oneDict['name'] = i.replace(/-/g, ' ')
+                    oneDict['type'] = 'smithing'
+                    oneDict['url'] = staticPath+"static/res/"+i+'.jpg';
+                    allItem.push(oneDict)
+                }
+                filtiedResource(allItem);
+                $('#itemTypeSel').change(function (event) {
+                    filtiedResource(allItem);
+                })
+            }
+        }
+        function setItemNum(itemName, itemUrl){
+            $('.info-tag').hide();
+            $('#settingPage').html('')
+            $('#settingPage')
+            .append($('<div>').html(itemName))
+                .append($('<img>', { class: "itemFig", src: itemUrl, style:'border:0px; margin:10px;' }))
+                .append($('<div>',{class:'flex',style:'align-items: center;margin: 2px;'})
+                    .append($('<div>',{style:'width:auto; margin-right:10px;'}).html('數量'))
+                    .append($('<input>',{id:'qty',type:'number',style:'font-size: 25px; height: 25px; width: 80px;'}))
+                    .append($('<input>',{id:'infinityCB',type:'checkbox',style:'margin-left:20px;', onclick:'checkDetect();'}))
+                    .append($('<div>',{style:'width:auto;'}).html('無限'))
+
+                )
+                .append($('<div>',{class:'flex',style:'align-items: center;margin: 2px;'})
+                    .append($('<button>', { id:'itemSetBTN'}).append('確認'))
+                    .append($('<button>', { onclick:'postForm("cancelAddItem","'+itemName+'")'}).append('刪除'))
+                )
+            $('#itemSetBTN').click(()=>{
+                if($('#infinityCB').prop("checked") == false && $('#qty').val() == '') alert('請輸入正確數量');
+                else{
+                    itemList[itemName] = {'url':itemUrl}
+                    if($('#infinityCB').prop("checked"))itemList[itemName]['qty'] = '無限';
+                    else itemList[itemName]['qty'] = $('#qty').val();
+                    postForm("cancelAddItem");
+                }
+            })
+            $('#qty').keypress(()=>{
+                if(event.keyCode == 13){
+                    if(($('#infinityCB').prop("checked") == false && $('#qty').val() == '') || $('#qty').val() == 0) alert('請輸入正確數量');
+                    else{
+                        itemList[itemName] = {'url':itemUrl}
+                        if($('#infinityCB').prop("checked"))itemList[itemName]['qty'] = '無限';
+                        else itemList[itemName]['qty'] = $('#qty').val();
+                        postForm("cancelAddItem");
+                    }
+                }
+            })
+            if(itemName in itemList){
+                if(itemList[itemName]['qty'] == '無限'){
+                    $('#infinityCB').prop('checked',true);
+                    $('#qty').prop('disabled',true);
+                }
+                else $('#qty').val(itemList[itemName]['qty'])
+            }
+        }
+        function appendItemImage(itemIndex, dataList) {
+            let figPath = dataList[itemIndex]['url'];
+            let name = dataList[itemIndex]['name'];
+
+            let newDiv = $('<div>', { class: "form-head", style: "justify-content: center;width: auto;" })
+                .append($('<img>', { class: "itemFig", src: figPath, style:'border:0px' })
+                    .click(function () {
+                        setItemNum(dataList[itemIndex]['name'], dataList[itemIndex]['url']) 
+                    })
+                );
+
+            // 綁定 mouseenter 和 mouseleave 事件
+            newDiv.mouseenter(function(e) {
+                $('.info-tag').text(name)
+                            .css({ top: e.pageY+50 + 'px', left: e.pageX -10 + 'px', display: 'block' });
+            }).mouseleave(function() {
+                $('.info-tag').hide();
+            });
+            $('#optionDataDiv').append(newDiv);
+        }
+        function checkDetect(){
+            if($('#infinityCB').prop("checked")){
+                $('#qty').prop('disabled',true)
+                $('#qty').val('')
+            }
+            else $('#qty').prop('disabled',false)
+        }
+        function filtiedResource(dataList) {
+            $('#optionDataDiv').html('')
+            for (var i = 0; i < dataList.length; i++) {
+                if (dataList[i]['type'] == $('#itemTypeSel').val()){
+                    appendItemImage(i, dataList);
+                }
+            }
+
+        }
+        function postForm(func,data=""){
+            if(func == 'cancel'){
+                $('#searchDiv').show()
+                $('#boardDiv').show()
+                $('#infoPage').hide()
+            }
+            else if(func == 'cancelAddItem'){
+                if(data in itemList) delete itemList[data];
+                $('#infoPage').show();
+                $('#settingPage').hide();
+                postForm($('#typeSel').val());
+            }
+            else{
+                $('#contentFormdiv').html('');
+
+                if(func.includes('道具')){
+                    $('#contentFormdiv')
+                        .append($('<div>',{class:'flex',style:'align-items: center;margin: 2px;background: #161616; border-radius: 10px; margin: 5px;'})
+                            .append($('<div>',{class:'formItemName'}).html('物品'))
+                            .append($('<div>',{id:'itemListDiv', style:"display: flex; flex-direction: column;"})
+                                .append($('<button>',{id:'addItemBTN' ,onclick:'add("item");'}).html('新增物品'))
+                            )
+                            
+                        )
+                        .append(
+                            $('<div>',{class:'flex',style:'align-items: center;margin: 2px;'})
+                                .append($('<div>',{class:'formItemName'}).html('價格'))
+                                .append($('<select>',{id:'rewardType'})
+                                    .append($('<option>',{style:'display:none;'}).html(''))  
+                                    .append($('<option>').html('Essence'))   
+                                )
+                                .append($('<input>',{id:'price',type:'number',style:'font-size: 25px; height: 25px; width: 80px;'}))
+                            // $('<div>',{id:'rewardDiv',class:'flex',style:'align-items: center;margin: 2px;'})
+                            //     .append($('<div>',{class:'formItemName'}).html('報酬'))
+                            //     .append($('<input>',{id:'reward',type:'text',style:'font-size: 25px; height: 25px; width: 150px;'}))
+                        )
+                    $('#itemLabel1').on('click',()=>{
+                        console.log('ok')
+                    })
+                    if(Object.keys(itemList).length != 0){
+                        let itemNum = 0
+                        for(let itemName in itemList){
+                            let itemLabelDiv = $('<div>',{id:'itemLabel'+itemNum,class:'itemLabel'})
+                                .append($('<img>',{id:'itemFig'+itemNum,class:'labelfig',src:itemList[itemName]['url']}))
+                                .append($('<div>',{style:"display: flex; flex-direction: column;"})
+                                    .append($('<div>',{class:'formItemName'}).html('數量：'))
+                                    .append($('<div>',{class:'formItemName',style:'justify-content: flex-end;'}).html(itemList[itemName]['qty']))
+                                )
+                            
+                            // 綁定 mouseenter 和 mouseleave 事件
+                            itemLabelDiv.mouseenter(function(e) {
+                                $('.info-tag').text(itemName)
+                                            .css({ top: e.pageY+50 + 'px', left: e.pageX -10 + 'px', display: 'block' });
+                                }).mouseleave(function() {
+                                    $('.info-tag').hide();
+                                }).click(function() {
+                                    setItemNum(itemName, itemList[itemName]['url']) 
+                                    $('#infoPage').hide();
+                                    $('#settingPage').show();
+
+                                });
+                            $('#addItemBTN').before(itemLabelDiv)
+                            itemNum += 1;
+                        }
+                    }
+                }
+
+                $('#contentFormdiv').append(
+                    $('<div>',{id:'noteDiv',class:'flex',style:'align-items: center;margin: 2px;'})
+                        .append($('<div>',{class:'formItemName'}).html('備註'))
+                        .append($('<input>',{id:'note',type:'text',style:'font-size: 25px; height: 25px; width: 150px;'}))
+                    )
+            }
+        }
+        window.onload = init;
+    </script>
+</head>
+
+<body>
+    <div id="boardDiv"></div>
+    <div id="searchDiv" style="display: none;">
+        <div id="userDiv" class="pageHeadDiv">
+            <div id="userName" class="flex" style="margin-bottom: 20px;"></div>
+            <button onclick="changeName();">變更暱稱</button>
+            <button onclick="signOut();">登出</button>
+        </div>
+        <div id="infoDiv" class="pageHeadDiv">
+            <div class="flex" style="height: 20%; white-space: nowrap;">進行中任務：<span>5</span>件</div>
+            <div class="flex" style="height: 20%; white-space: nowrap;">進行中委託：<span>5</span>件</div>
+            <button style="height: 60%; width: 80%;" onclick="post()">新增任務</button>
+        </div>
+        <div class="emptyFlex"></div>
+        <div id="filterDiv" class="pageHeadDiv">
+            <div class="searchHead">依據任務類型篩選
+                <div class="emptyFlex"></div>
+                <button>全部顯示</button>
+                <button>全部隱藏</button>
+            </div>
+            <div id="checkBoxDiv">
+                <div class="flex"><input type="checkbox"/>道具徵求　</div>
+                <div class="flex"><input type="checkbox"/>道具銷售　</div>
+                <div class="flex"><input type="checkbox"/>搬運委託　</div>
+                <div class="flex"><input type="checkbox"/>搬運服務　</div>
+                <div class="flex"><input type="checkbox"/>討伐委託　</div>
+                <div class="flex"><input type="checkbox"/>討伐服務　</div>
+                <div class="flex"><input type="checkbox"/>護衛委託　</div>
+                <div class="flex"><input type="checkbox"/>護衛服務　</div>
+                <div class="flex"><input type="checkbox"/>代工委託　</div>
+                <div class="flex"><input type="checkbox"/>代工服務　</div>
+                <div class="flex"><input type="checkbox"/>其他任務　</div>
+                
+            </div>
+        </div>
+            
+    </div>
+    <div id="msgDiv" style="z-index:99;"></div>
+    <div id="infoPage" style="display: none;"></div>
+    <div id="settingPage" style="display: none;"></div>
+    <div id="siginPage" style="display: none;">
+        <div id="signUp" class="flex" style="display: none; align-items: center;">
+            <div class="flex" style="color: wheat;">請輸入遊戲暱稱　</div>
+            <input id="userNameInput" type="text" style="font-size: 25px; height: 25px; width: 150px;"/>
+            <button onclick="signUp();">註冊</button>
+        </div>
+        <div id="signIn" class="flex" style="display: none;">
+            <button onclick="logIn();" style="width: 200px; padding: 10px; border-radius: 10px;">請登入(Google)</button>
+        </div>
+    </div>
+    <div class="info-tag" style="position: absolute; display: none;border-radius: 5px; border: 1px solid;background-color: #b1b1b1;padding: 5px;white-space: nowrap;"></div>
+    <div id="waitMessage">
+        <div style="display: flex;">
+            Loading...
+            <div class="loader"></div>
+        </div>
+    </div>
+    
+    <!-- <div id="searchSettingPage" style="display: none;"></div> -->
+    <div id="getDataDiv" style="display: none;">{{data}}</div>
+</body>
+
+</html>
