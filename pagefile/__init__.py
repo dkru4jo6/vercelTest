@@ -21,4 +21,4 @@ dbName = 'resourceMap'
 verNum = '1-8-2'
 whVerNum = '0-0-1'
 def resourceMap():
-    return render_template('redirect.html')
+    return render_template('Shoot.html')
